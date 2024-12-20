@@ -14,6 +14,16 @@ import (
 )
 
 func main() {
+	// start := time.Now()
+	// numUUIDs := 10000000 // Number of UUIDs to generate
+
+	// for i := 0; i < numUUIDs; i++ {
+	// 	// Generate a random UUID
+	// 	uuid.New()
+	// }
+
+	// duration := time.Since(start)
+	// fmt.Printf("Generated %d UUIDs in %v, which is %f UUIDs per second\n", numUUIDs, duration, float64(numUUIDs)/duration.Seconds())
 	//load env
 	err := godotenv.Load()
 	if err != nil {
@@ -38,7 +48,6 @@ func main() {
 	}
 	logger.Success("Server is running on port", port)
 	r.Run(":" + port)
-
 }
 
 func executeSchemaFile(db *sql.DB, sqlFile string) error {

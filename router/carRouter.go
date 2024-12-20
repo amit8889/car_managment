@@ -12,11 +12,12 @@ import (
 func CarRouter(db *sql.DB, r *gin.Engine) {
 	carHandler := carInit(db)
 	router := r.Group("/car")
-	router.GET("/getCarById", carHandler.GetCarById)
+	router.GET("/getCarById/:carId", carHandler.GetCarById)
+	router.GET("/getAllCars", carHandler.GetAllCars)
+	router.POST("/addCar", carHandler.CreateCar)
+	//router.PUT("/updateCar/:carId", carHandler.UpdateCar)
+	router.DELETE("/deleteCar/:carId", carHandler.DeleteCarById)
 	/*
-	 car by id GET
-	 cars GET
-	 cars POST
 	 cars ID delete
 	 cars ID put
 	*/

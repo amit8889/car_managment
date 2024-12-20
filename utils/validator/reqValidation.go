@@ -1,13 +1,10 @@
-package response
+package validator
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
-	"github.com/amit8889/car_managemnt/utils/response"
-	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -113,10 +110,15 @@ func validationErrorMessages(err validator.FieldError) string {
 	}
 }
 
-func ValidateStruct(data interface{}) map[string]string {
-	if validate == nil {
-		initalizeValidation()
+func yearValidation(fl validator.FieldLevel) bool {
+	year := fl.Field().String()
+	if len(year) != 4 {
+		return false
 	}
+	return year >= "1886" && year <= time.Now().Format("2006") // Validate year range
+}
+
+func ValidateStruct(data interface{}) map[string]string {
 	err := validate.Struct(data)
 	if err == nil {
 		return nil
@@ -128,34 +130,4 @@ func ValidateStruct(data interface{}) map[string]string {
 		errors[fieldName] = validationErrorMessages(err)
 	}
 	return errors
-}
-
-func ValidateRequest(c *gin.Context, val any) bool {
-	err := c.ShouldBindJSON(&val)
-	if err != nil {
-		response.WriteJson(c, http.StatusBadRequest, map[string]interface{}{
-			"message": fmt.Sprintf("Invalid request body: %v", err.Error()),
-			"success": false,
-		})
-		return false
-
-	}
-	errors := ValidateStruct(val)
-	if len(errors) > 0 {
-		response.WriteJson(c, http.StatusBadRequest, map[string]interface{}{
-			"message": "Invalid request body",
-			"success": false,
-			"errors":  errors,
-		})
-		return false
-	}
-	return true
-}
-
-func yearValidation(fl validator.FieldLevel) bool {
-	year := fl.Field().String()
-	if len(year) != 4 {
-		return false
-	}
-	return year >= "1886" && year <= time.Now().Format("2006") // Validate year range
 }
